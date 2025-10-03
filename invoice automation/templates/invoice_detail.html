@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Invoice #{{ invoice.id }} - InvoicePro{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h3 fw-bold text-primary mb-0">
+        <i class="bi bi-file-earmark-text me-2"></i> Invoice #{{ invoice.id }}
+      </h1>
+      <p class="text-muted mb-0">
+        Created: {{ invoice.created_at.strftime("%Y-%m-%d") if invoice.created_at else "N/A" }}
+        | Due: {{ invoice.due_date.strftime("%Y-%m-%d") if invoice.due_date else "N/A" }}
+      </p>
+    </div>
+    <span class="badge {% if invoice.status == 'Paid' %}bg-success{% else %}bg-danger{% endif %} fs-6 px-3 py-2">
+      {{ invoice.status or "Unpaid" }}
+    </span>
+  </div>
+
+  <!-- Invoice Info -->
+  <div class="row g-4">
+    <!-- Client Info -->
+    <div class="col-md-6">
+      <div class="card bg-dark shadow-lg border border-secondary rounded-4">
+        <div class="card-body">
+          <h5 class="card-title text-secondary">Bill To</h5>
+          <p class="fs-5 mb-1">{{ invoice.client_name or "N/A" }}</p>
+          <p class="text-muted">Email: {{ invoice.client_email or "N/A" }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Invoice Summary -->
+    <div class="col-md-6">
+      <div class="card bg-dark shadow-lg border border-secondary rounded-4">
+        <div class="card-body">
+          <h5 class="card-title text-secondary">Invoice Summary</h5>
+          <p class="fs-5 mb-1">
+            Amount: <strong>${{ "%.2f"|format(invoice.total_amount() if invoice.total_amount else 0) }}</strong>
+          </p>
+          <p class="text-muted">Status: {{ invoice.status or "Unpaid" }}</p>
+          <p class="text-muted">Due Date: {{ invoice.due_date.strftime("%Y-%m-%d") if invoice.due_date else "N/A" }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Invoice Items -->
+  <div class="card bg-dark shadow-lg border border-secondary rounded-4 mt-4">
+    <div class="card-body">
+      <h5 class="card-title text-secondary mb-3">Items</h5>
+      {% if invoice.items and invoice.items|length > 0 %}
+      <div class="table-responsive">
+        <table class="table table-dark table-hover align-middle mb-0">
+          <thead class="bg-secondary text-light">
+            <tr>
+              <th>Description</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in invoice.items %}
+            <tr>
+              <td>{{ item.description }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>${{ "%.2f"|format(item.price) }}</td>
+              <td>${{ "%.2f"|format(item.subtotal() if item.subtotal else item.quantity * item.price) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="text-muted">No items added to this invoice.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="d-flex gap-2 mt-4">
+    <a class="btn btn-outline-warning rounded-pill" href="{{ url_for('download_invoice', invoice_id=invoice.id) }}">
+      <i class="bi bi-download me-1"></i> Download PDF
+    </a>
+
+    {% if invoice.status != "Paid" %}
+    <form action="{{ url_for('mark_paid', invoice_id=invoice.id) }}" method="post" style="display:inline">
+      <button class="btn btn-success rounded-pill">
+        <i class="bi bi-check2-circle me-1"></i> Mark Paid
+      </button>
+    </form>
+    {% endif %}
+    <a href="{{ url_for('edit_invoice', invoice_id=invoice.id) }}" class="btn btn-warning rounded-pill">Edit Invoice</a>
+
+    <form action="{{ url_for('delete_invoice', invoice_id=invoice.id) }}" method="post" style="display:inline"
+          onsubmit="return confirm('Delete invoice #{{ invoice.id }}?');">
+      <button class="btn btn-danger rounded-pill">
+        <i class="bi bi-trash me-1"></i> Delete
+      </button>
+    </form>
+  </div>
+
+</div>
+{% endblock %}

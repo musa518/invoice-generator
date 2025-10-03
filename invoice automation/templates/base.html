@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}InvoicePro{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Flatpickr CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="bg-dark text-light">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-black shadow-sm sticky-top">
+  <div class="container-fluid">
+    
+    <!-- Brand -->
+    <a class="navbar-brand fw-bold d-flex align-items-center text-primary" href="{{ url_for('dashboard') }}">
+      <i class="bi bi-briefcase-fill me-2"></i> InvoicePro
+    </a>
+
+    <!-- Mobile Toggler -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Nav Items -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}"
+             href="{{ url_for('dashboard') }}">
+            <i class="bi bi-speedometer2 me-1"></i> Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if '/invoices' in request.path %}active{% endif %}"
+             href="{{ url_for('invoices') }}">
+            <i class="bi bi-receipt me-1"></i> Invoices
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if '/reports' in request.path %}active{% endif %}"
+             href="{{ url_for('reports') }}">
+            <i class="bi bi-graph-up-arrow me-1"></i> Reports
+          </a>
+        </li>
+      </ul>
+
+      <!-- Right Side -->
+      <div class="d-flex">
+        <a class="btn btn-primary shadow-sm rounded-pill px-3" href="{{ url_for('create_invoice') }}">
+          <i class="bi bi-plus-circle me-1"></i> New Invoice
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="container my-4">
+  {% block content %}{% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="text-center mt-5 py-3 border-top border-secondary sticky-bottom bg-black">
+  {% set current_year = current_year or namespace(value=2024) %}
+  {% if current_year.value == 2024 %}
+    {% set current_year = current_year.value %}
+  {% else %}
+    {% set current_year = current_year.value + 1 %}
+  {% endif %}
+  <p class="mb-0">&copy; {{ current_year }} InvoicePro. All rights reserved.</p>
+</footer>
+
+<!-- Bootstrap Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Flatpickr -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+  flatpickr(".datepicker", {
+    dateFormat: "Y-m-d",
+    allowInput: true
+  });
+</script>
+
+<!-- Custom JS -->
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

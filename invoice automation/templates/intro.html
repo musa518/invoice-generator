@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InvoicePro - Overview</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    /* === MAIN BACKGROUND & BODY === */
+    html, body {
+      background-color: #0f111a !important;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    /* === CONTAINER === */
+    .container {
+      max-width: 1200px;
+    }
+
+    /* === HERO SECTION === */
+    .hero {
+      text-align: center;
+      padding: 8rem 1rem 5rem 1rem;
+    }
+    .hero h1 {
+      font-size: 4rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #6a11cb, #2575fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 1.25rem;
+      color: #c0c0c0;
+      margin-top: 1rem;
+    }
+    .hero .btn {
+      margin-top: 2rem;
+      font-weight: 600;
+      padding: 0.75rem 2rem;
+    }
+
+    /* === CARDS === */
+    .card {
+      background-color: rgba(20, 20, 35, 0.85);
+      border-radius: 1rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+      transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+      color: #e0e0e0;
+    }
+    .card-hover:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.8);
+      background-color: rgba(30, 30, 50, 0.95);
+    }
+    .card .text-muted {
+      color: #a0a0a0 !important;
+    }
+
+    /* === BADGES === */
+    .badge-pill {
+      font-size: 1rem;
+      padding: 0.6rem 1rem;
+      font-weight: 600;
+    }
+
+    /* === GRADIENT BUTTON === */
+    .btn-gradient {
+      background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+      border: none;
+      color: #fff;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .btn-gradient:hover {
+      background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+      transform: translateY(-2px);
+    }
+
+    /* === FADE-IN SCROLL EFFECT === */
+    .fade-in-section {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+    .fade-in-section.is-visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* === FEATURE & HOW IT WORKS SECTION === */
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      color: #fff;
+    }
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    /* === TECH STACK BADGES === */
+    .tech-stack .badge {
+      background-color: rgba(50, 50, 80, 0.85);
+      color: #fff;
+      font-weight: 500;
+      font-size: 1rem;
+      padding: 0.65rem 1.2rem;
+      transition: transform 0.3s, background-color 0.3s;
+    }
+    .tech-stack .badge:hover {
+      transform: translateY(-3px);
+      background-color: rgba(70, 70, 120, 0.9);
+    }
+
+    /* === CTA SECTION === */
+    .cta {
+      text-align: center;
+      padding: 5rem 1rem 8rem 1rem;
+    }
+    .cta h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      color: #fff;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 3rem;
+      }
+      .hero p {
+        font-size: 1rem;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HERO -->
+  <section class="hero fade-in-section">
+    <h1>InvoicePro</h1>
+    <p>Create, manage, and track invoices effortlessly. Perfect for freelancers & small businesses.</p>
+    <a href="/" class="btn btn-gradient btn-lg">Try Demo Now</a>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="row g-4 mb-5">
+    <div class="col-md-4 fade-in-section">
+      <div class="card card-hover h-100 text-center p-4">
+        <i class="bi bi-file-earmark-text-fill feature-icon text-primary"></i>
+        <h5 class="fw-bold">Generate Invoices</h5>
+        <p class="text-muted">Quickly create professional invoices with multiple items, taxes, and due dates.</p>
+      </div>
+    </div>
+    <div class="col-md-4 fade-in-section">
+      <div class="card card-hover h-100 text-center p-4">
+        <i class="bi bi-bar-chart-fill feature-icon text-success"></i>
+        <h5 class="fw-bold">Reports & Analytics</h5>
+        <p class="text-muted">Track revenue, paid vs unpaid invoices, and see top clients at a glance.</p>
+      </div>
+    </div>
+    <div class="col-md-4 fade-in-section">
+      <div class="card card-hover h-100 text-center p-4">
+        <i class="bi bi-cloud-arrow-down-fill feature-icon text-info"></i>
+        <h5 class="fw-bold">Download PDFs</h5>
+        <p class="text-muted">Export invoices as clean, ready-to-send PDF files in one click.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="text-center mb-5 fade-in-section">
+    <h2 class="section-title">How It Works</h2>
+    <div class="row g-4">
+      <div class="col-md-4 fade-in-section">
+        <div class="card card-hover h-100 p-4 text-center">
+          <span class="badge bg-primary badge-pill mb-3">1</span>
+          <h5>Create Invoice</h5>
+          <p class="text-muted">Enter client details, items, taxes, and due dates in a simple form.</p>
+        </div>
+      </div>
+      <div class="col-md-4 fade-in-section">
+        <div class="card card-hover h-100 p-4 text-center">
+          <span class="badge bg-success badge-pill mb-3">2</span>
+          <h5>Track Payments</h5>
+          <p class="text-muted">Mark invoices as paid or unpaid, and keep track of your cash flow.</p>
+        </div>
+      </div>
+      <div class="col-md-4 fade-in-section">
+        <div class="card card-hover h-100 p-4 text-center">
+          <span class="badge bg-info badge-pill mb-3">3</span>
+          <h5>Generate Reports</h5>
+          <p class="text-muted">Analyze revenue, top clients, and monthly performance with charts.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH STACK -->
+  <section class="text-center mb-5 fade-in-section tech-stack">
+    <h2 class="section-title">Built With</h2>
+    <div class="d-flex justify-content-center flex-wrap gap-3">
+      <span class="badge">Flask</span>
+      <span class="badge">SQLAlchemy</span>
+      <span class="badge">SQLite</span>
+      <span class="badge">Bootstrap 5</span>
+      <span class="badge">Chart.js</span>
+      <span class="badge">Python</span>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta fade-in-section">
+    <h2>Start Generating Invoices Today</h2>
+    <a href="/" class="btn btn-gradient btn-lg">Try Demo Now</a>
+  </section>
+
+</div>
+
+<script>
+  // FADE-IN SCROLL
+  document.addEventListener("DOMContentLoaded", function() {
+    const faders = document.querySelectorAll('.fade-in-section');
+
+    const appearOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+
+    const appearOnScroll = new IntersectionObserver(function(entries, observer) {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      });
+    }, appearOptions);
+
+    faders.forEach(fader => appearOnScroll.observe(fader));
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

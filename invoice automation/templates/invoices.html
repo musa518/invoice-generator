@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Invoices - InvoicePro{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+  <!-- Header + Toolbar -->
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h1 class="h2 fw-bold text-primary mb-0">
+        <i class="bi bi-receipt me-2"></i> Invoices
+      </h1>
+      <p class="text-muted mb-0">Manage and review all client invoices</p>
+    </div>
+    <a href="{{ url_for('create_invoice') }}" class="btn btn-primary rounded-pill shadow-sm">
+      <i class="bi bi-plus-circle me-1"></i> New Invoice
+    </a>
+  </div>
+
+  <!-- Invoice Table -->
+  <div class="card shadow-lg border-0 rounded-4">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Client</th>
+              <th scope="col">Status</th>
+              <th scope="col" class="text-end">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for inv in invoices %}
+            <tr>
+              <td class="fw-semibold">{{ loop.index }}</td>
+              <td>
+                <i class="bi bi-person-circle me-2 text-secondary"></i>
+                {{ inv.client_name }}
+              </td>
+              <td>
+                {% if inv.status == "Paid" %}
+                  <span class="badge bg-success rounded-pill px-3 py-2">Paid</span>
+                {% elif inv.status == "Pending" %}
+                  <span class="badge bg-warning text-dark rounded-pill px-3 py-2">Pending</span>
+                {% else %}
+                  <span class="badge bg-danger rounded-pill px-3 py-2">{{ inv.status }}</span>
+                {% endif %}
+              </td>
+              <td class="text-end fw-bold text-success">
+                ${{ "%.2f"|format(inv.amount or 0) }}
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="4" class="text-center text-muted py-4">
+                <i class="bi bi-inbox fs-4 d-block mb-2"></i>
+                No invoices found.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

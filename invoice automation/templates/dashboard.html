@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - InvoicePro{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+  <!-- Header -->
+  <div class="d-flex align-items-center justify-content-between mb-5">
+    <div>
+      <h1 class="h3 fw-bold text-white mb-1">
+        <i class="bi bi-speedometer2 me-2 text-primary"></i> Dashboard
+      </h1>
+      <p class="text-muted mb-0">Monitor invoices, payments, and revenue trends</p>
+    </div>
+    <a href="{{ url_for('create_invoice') }}" class="btn btn-success shadow-sm rounded-pill px-4">
+      <i class="bi bi-plus-circle me-1"></i> New Invoice
+    </a>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="row g-4 mb-5">
+    {% set cards = [
+        {"title": "Total Invoices", "count": total_invoices, "icon": "bi-file-earmark-text", "color": "primary"},
+        {"title": "Paid Invoices", "count": paid_invoices, "icon": "bi-cash-stack", "color": "success"},
+        {"title": "Unpaid Invoices", "count": unpaid_invoices, "icon": "bi-exclamation-circle", "color": "danger"},
+        {"title": "Total Revenue", "count": "%.2f"|format(total_revenue or 0.0), "icon": "bi-bar-chart-line", "color": "info"}
+    ] %}
+    {% for card in cards %}
+    <div class="col-6 col-lg-3">
+      <div class="card border-0 shadow-lg rounded-4 h-100 hover-card">
+        <div class="card-body py-4 px-4">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <h6 class="text-uppercase text-muted small mb-2">{{ card.title }}</h6>
+              <h3 class="fw-bold mb-0 counter text-{{ card.color }}" data-target="{{ card.count }}">0</h3>
+            </div>
+            <div class="icon-circle bg-{{ card.color }} bg-opacity-10 text-{{ card.color }}">
+              <i class="bi {{ card.icon }} fs-3"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="row g-4">
+    <!-- Monthly Revenue Chart -->
+    <div class="col-lg-6">
+      <div class="card bg-dark shadow-lg rounded-4 border-0 h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-3 fw-semibold">
+            <i class="bi bi-graph-up-arrow me-2 text-info"></i> Monthly Revenue
+          </h5>
+          <canvas id="revenueChart" height="150"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Invoices Table -->
+    <div class="col-lg-6">
+      <div class="card bg-dark shadow-lg rounded-4 border-0 h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-3 fw-semibold">
+            <i class="bi bi-receipt me-2 text-warning"></i> Recent Invoices
+          </h5>
+          <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle mb-0">
+              <thead class="bg-secondary text-light">
+                <tr>
+                  <th>#</th>
+                  <th>Client</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Due Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for invoice in invoices %}
+                <tr>
+                  <td>{{ invoice.id }}</td>
+                  <td>{{ invoice.client_name }}</td>
+                  <td>${{ "%.2f"|format(invoice.amount or 0.0) }}</td>
+                  <td>
+                    {% if invoice.status == "Paid" %}
+                      <span class="badge bg-success rounded-pill px-3">Paid</span>
+                    {% else %}
+                      <span class="badge bg-danger rounded-pill px-3">Unpaid</span>
+                    {% endif %}
+                  </td>
+                  <td>{{ invoice.due_date }}</td>
+                  <td class="d-flex gap-2">
+                    <a href="{{ url_for('invoice_detail', invoice_id=invoice.id) }}" class="btn btn-sm btn-outline-primary rounded-pill">View</a>
+                    <a href="{{ url_for('download_invoice', invoice_id=invoice.id) }}" class="btn btn-sm btn-outline-warning rounded-pill">PDF</a>
+                    <form method="POST" action="{{ url_for('delete_invoice', invoice_id=invoice.id) }}" onsubmit="return confirm('Are you sure?');">
+                      <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="6" class="text-center text-muted">No invoices found.</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .icon-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+  }
+</style>
+{% endblock %}
+
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const revenueLabels = {{ revenue_labels|tojson }};
+  const revenueValues = {{ revenue_values|tojson }};
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const ctx = document.getElementById("revenueChart");
+
+    if (ctx) {
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: revenueLabels,
+          datasets: [
+            {
+              label: "Revenue",
+              data: revenueValues,
+              borderColor: "rgba(75, 192, 192, 1)",
+              backgroundColor: "rgba(75, 192, 192, 0.2)",
+              tension: 0.4,
+              fill: true,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { labels: { color: "#fff" } },
+          },
+          scales: {
+            x: { ticks: { color: "#aaa" } },
+            y: { ticks: { color: "#aaa" } },
+          },
+        },
+      });
+    }
+  });
+</script>
+
+
+{% endblock %}

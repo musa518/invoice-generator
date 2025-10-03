@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5 fade-in">
+    <div class="card p-4">
+        <h2 class="card-title mb-4">Edit Invoice</h2>
+        <form method="POST" action="{{ url_for('edit_invoice', invoice_id=invoice.id) }}">
+            
+            <!-- Client Details -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Client Name</label>
+                    <input type="text" class="form-control" name="client_name" value="{{ invoice.client_name }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Client Email</label>
+                    <input type="email" class="form-control" name="client_email" value="{{ invoice.client_email }}">
+                </div>
+            </div>
+
+            <!-- Invoice Dates -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Issue Date</label>
+                    <input type="date" class="form-control" name="issue_date" value="{{ invoice.issue_date }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Due Date</label>
+                    <input type="date" class="form-control" name="due_date" value="{{ invoice.due_date }}">
+                </div>
+            </div>
+
+            <!-- Items Table -->
+            <h5 class="mt-4">Invoice Items</h5>
+            <table class="table table-dark table-bordered align-middle" id="itemsTable">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Price (per unit)</th>
+                        <th>Tax %</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in invoice.items %}
+                    <tr>
+                        <td><input type="text" name="item_name[]" class="form-control" value="{{ item.description }}" required></td>
+                        <td><input type="number" name="item_qty[]" class="form-control" value="{{ item.quantity }}" min="1" required></td>
+                        <td><input type="number" name="item_price[]" class="form-control" step="0.01" value="{{ item.price }}" required></td>
+                        <td><input type="number" name="item_tax[]" class="form-control" step="0.01" value="{{ item.tax if item.tax else 0 }}"></td>
+                        <td class="item-total">{{ (item.quantity * item.price * (1 + (item.tax or 0)/100))|round(2) }}</td>
+                        <td><button type="button" class="btn btn-danger btn-sm remove-item">−</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-custom mb-3" id="addItem">+ Add Item</button>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label class="form-label">Optional Description</label>
+                <textarea class="form-control" name="description" rows="3">{{ invoice.description }}</textarea>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn btn-custom w-100">Update Invoice</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Add new item row
+    document.getElementById("addItem").addEventListener("click", function() {
+        const table = document.querySelector("#itemsTable tbody");
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td><input type="text" name="item_name[]" class="form-control" required></td>
+            <td><input type="number" name="item_qty[]" class="form-control" value="1" min="1" required></td>
+            <td><input type="number" name="item_price[]" class="form-control" step="0.01" required></td>
+            <td><input type="number" name="item_tax[]" class="form-control" step="0.01" value="0"></td>
+            <td class="item-total">0.00</td>
+            <td><button type="button" class="btn btn-danger btn-sm remove-item">−</button></td>
+        `;
+        table.appendChild(row);
+    });
+
+    // Remove item row
+    document.addEventListener("click", function(e) {
+        if (e.target.classList.contains("remove-item")) {
+            e.target.closest("tr").remove();
+        }
+    });
+
+    // Auto-update totals
+    document.addEventListener("input", function(e) {
+        if (e.target.name.includes("item_")) {
+            const row = e.target.closest("tr");
+            const qty = parseFloat(row.querySelector("[name='item_qty[]']").value) || 0;
+            const price = parseFloat(row.querySelector("[name='item_price[]']").value) || 0;
+            const tax = parseFloat(row.querySelector("[name='item_tax[]']").value) || 0;
+
+            let total = qty * price;
+            total += total * (tax / 100);
+            row.querySelector(".item-total").textContent = total.toFixed(2);
+        }
+    });
+</script>
+{% endblock %}
