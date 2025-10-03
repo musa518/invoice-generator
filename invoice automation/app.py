@@ -139,7 +139,7 @@ with app.app_context():
 
 
 # --- Dashboard ---
-@app.route("/")
+@app.route("/dashboard")
 def dashboard():
     invoices = Invoice.query.order_by(Invoice.id.desc()).limit(5).all()
 
@@ -441,7 +441,7 @@ def edit_invoice(invoice_id):
             return f"Error updating invoice: {e}", 500
 
     return render_template("edit_invoice.html", invoice=invoice)
-@app.route("/intro")
+@app.route("/")
 def intro():
     return render_template("intro.html")
 
